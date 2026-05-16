@@ -145,7 +145,6 @@ export default function TestPage() {
             <div className="algo-info">
               <strong>{result.algorithm}</strong>
               <p>{result.algorithm_description}</p>
-              <p style={{ marginTop: '8px' }}>Dataset: <strong style={{ color: 'var(--accent-purple)' }}>{result.dataset_name}</strong></p>
             </div>
 
             {result.mode !== 'knapsack' ? (
