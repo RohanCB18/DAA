@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import AboutPage from './pages/AboutPage.jsx';
 import TestPage from './pages/TestPage.jsx';
+import ComparisonPage from './pages/ComparisonPage.jsx';
 
 export default function App() {
   const [page, setPage] = useState('about');
@@ -26,6 +27,12 @@ export default function App() {
           >
             Test Console
           </button>
+          <button
+            className={`nav-btn ${page === 'compare' ? 'active' : ''}`}
+            onClick={() => setPage('compare')}
+          >
+            Benchmark Console
+          </button>
         </nav>
         <div className="header-status">
           <div className="status-indicator"></div>
@@ -36,6 +43,7 @@ export default function App() {
       {/* Page Content */}
       {page === 'about' && <AboutPage onNavigate={setPage} />}
       {page === 'test' && <TestPage />}
+      {page === 'compare' && <ComparisonPage />}
     </div>
   );
 }

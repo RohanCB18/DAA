@@ -5,6 +5,7 @@
 #include <limits>
 #include <functional>
 #include <set>
+#include <chrono>
 
 // ═══════════════════════════════════════════════════════════════════
 //  MODE 1 — Modified DFS Cycle Detection
@@ -17,9 +18,11 @@ private:
     const Graph& graph;
     Cycle best_cycle;
     bool found;
+    int op_count;
 
     void dfs(int start, int current, std::vector<int>& path,
              std::vector<bool>& in_stack, double running_product) {
+        op_count++;
 
         for (int next = 0; next < graph.n; next++) {
             if (graph.adj[current][next] <= 0) continue;
@@ -55,11 +58,16 @@ private:
     }
 
 public:
-    DFSDetector(const Graph& g) : graph(g), found(false) {}
+    double execution_time_us = 0.0;
+    int operation_count = 0;
+
+    DFSDetector(const Graph& g) : graph(g), found(false), op_count(0) {}
 
     Cycle detect() {
+        auto start_time = std::chrono::high_resolution_clock::now();
         found = false;
         best_cycle = Cycle();
+        op_count = 0;
 
         for (int start = 0; start < graph.n; start++) {
             std::vector<bool> in_stack(graph.n, false);
@@ -67,6 +75,11 @@ public:
             std::vector<int> path = {start};
             dfs(start, start, path, in_stack, 1.0);
         }
+
+        auto end_time = std::chrono::high_resolution_clock::now();
+        execution_time_us = std::chrono::duration<double, std::micro>(end_time - start_time).count();
+        operation_count = op_count;
+
         return best_cycle;
     }
 
@@ -84,77 +97,89 @@ class BellmanFordDetector {
 private:
     const Graph& graph;
 
-    // Trace the negative cycle from a node known to be in/reachable from it
-    Cycle traceCycle(const std::vector<int>& pred, int start_node) {
-        int n = graph.n;
-        // Walk back n times to guarantee we land inside the cycle
-        int v = start_node;
-        for (int i = 0; i < n; i++) v = pred[v];
-
-        // Now v is inside the cycle — trace it
-        std::vector<int> cycle_path;
-        int cur = v;
-        do {
-            cycle_path.push_back(cur);
-            cur = pred[cur];
-        } while (cur != v && (int)cycle_path.size() <= n);
-        cycle_path.push_back(v);
-        std::reverse(cycle_path.begin(), cycle_path.end());
-
-        // Build Cycle struct with rates and product
-        Cycle cycle;
-        cycle.path = cycle_path;
-        cycle.product = 1.0;
-        for (size_t i = 0; i + 1 < cycle_path.size(); i++) {
-            double rate = graph.adj[cycle_path[i]][cycle_path[i + 1]];
-            cycle.rates.push_back(rate);
-            cycle.product *= rate;
-        }
-        cycle.profit_percent = (cycle.product - 1.0) * 100.0;
-        return cycle;
-    }
-
 public:
+    double execution_time_us = 0.0;
+    int operation_count = 0;
+
     BellmanFordDetector(const Graph& g) : graph(g) {}
 
     Cycle detect() {
+        auto start_time = std::chrono::high_resolution_clock::now();
+        int op_count = 0;
         int n = graph.n;
-        Cycle best;
-        bool found = false;
+        Cycle cycle;
 
-        for (int source = 0; source < n; source++) {
-            std::vector<double> dist(n, 1e18);
-            std::vector<int> pred(n, -1);
-            dist[source] = 0;
+        std::vector<double> dist(n, 0.0);
+        std::vector<int> pred(n, -1);
 
-            // Relax V-1 times
-            for (int i = 0; i < n - 1; i++) {
-                for (const auto& e : graph.edges) {
-                    double w = -std::log(e.rate);
-                    if (dist[e.from] < 1e17 && dist[e.from] + w < dist[e.to] - 1e-9) {
-                        dist[e.to] = dist[e.from] + w;
-                        pred[e.to] = e.from;
-                    }
-                }
-            }
-
-            // V-th relaxation: if still possible → negative cycle
+        // Relax V-1 times
+        for (int i = 0; i < n - 1; i++) {
             for (const auto& e : graph.edges) {
-                double w = -std::log(e.rate);
-                if (dist[e.from] < 1e17 && dist[e.from] + w < dist[e.to] - 1e-9) {
-                    // Make sure pred is set for tracing
+                op_count++;
+                double w = -std::log(e.rate) + 0.0005; // Incorporate 0.05% transaction fee per hop
+                if (dist[e.from] + w < dist[e.to] - 1e-9) {
+                    dist[e.to] = dist[e.from] + w;
                     pred[e.to] = e.from;
-                    Cycle c = traceCycle(pred, e.to);
-
-                    if (c.path.size() >= 3 && (!found || c.product > best.product)) {
-                        best = c;
-                        found = true;
-                    }
-                    break;
                 }
             }
         }
-        return best;
+
+        // V-th relaxation: check for negative cycle
+        int cycle_node = -1;
+        for (const auto& e : graph.edges) {
+            op_count++;
+            double w = -std::log(e.rate) + 0.0005; // Incorporate 0.05% transaction fee per hop
+            if (dist[e.from] + w < dist[e.to] - 1e-9) {
+                pred[e.to] = e.from;
+                cycle_node = e.to;
+                break;
+            }
+        }
+
+        if (cycle_node != -1) {
+            // Walk back n times to guarantee we land inside the cycle
+            int v = cycle_node;
+            for (int i = 0; i < n; i++) {
+                if (v < 0 || v >= n) {
+                    v = -1;
+                    break;
+                }
+                v = pred[v];
+            }
+
+            if (v != -1) {
+                std::vector<int> cycle_path;
+                int cur = v;
+                do {
+                    cycle_path.push_back(cur);
+                    if (cur < 0 || cur >= n) {
+                        cycle_path.clear();
+                        break;
+                    }
+                    cur = pred[cur];
+                } while (cur != v && (int)cycle_path.size() <= n);
+
+                if (!cycle_path.empty() && cur == v && cycle_path.size() >= 3) {
+                    cycle_path.push_back(v);
+                    std::reverse(cycle_path.begin(), cycle_path.end());
+
+                    cycle.path = cycle_path;
+                    cycle.product = 1.0;
+                    for (size_t i = 0; i + 1 < cycle_path.size(); i++) {
+                        double rate = graph.adj[cycle_path[i]][cycle_path[i + 1]];
+                        cycle.rates.push_back(rate);
+                        cycle.product *= rate;
+                    }
+                    cycle.profit_percent = (cycle.product - 1.0) * 100.0;
+                }
+            }
+        }
+
+        auto end_time = std::chrono::high_resolution_clock::now();
+        execution_time_us = std::chrono::duration<double, std::micro>(end_time - start_time).count();
+        operation_count = op_count;
+
+        return cycle;
     }
 };
 
@@ -223,57 +248,50 @@ private:
 public:
     KnapsackAllocator(const Graph& g) : graph(g) {}
 
-    KnapsackResult allocate(double total_capital) {
+    KnapsackResult allocate(double total_capital, int limit = 0) {
         findAllCycles();
 
         // Filter to only profitable cycles
         std::vector<Cycle> profitable;
-        for (auto& c : all_cycles) {
-            if (c.isProfitable()) profitable.push_back(c);
+        if (limit != -1) {
+            for (auto& c : all_cycles) {
+                if (c.isProfitable()) profitable.push_back(c);
+            }
         }
 
-        // Sort by viability: profit_percent / cycle_length  (greedy density)
+        // Sort by gross profit percent descending
+        std::sort(profitable.begin(), profitable.end(),
+                  [](const Cycle& a, const Cycle& b) { return a.profit_percent > b.profit_percent; });
+
+        // Apply limit if specified
+        if (limit > 0 && (int)profitable.size() > limit) {
+            profitable.resize(limit);
+        }
+
+        // Calculate densities for each profitable cycle
+        std::vector<double> densities;
+        double sum_densities = 0.0;
         for (auto& c : profitable) {
-            // viability is a density metric for the knapsack
+            double risk = c.path.size() - 1; // hops
+            double density = c.profit_percent / risk;
+            densities.push_back(density);
+            sum_densities += density;
         }
 
-        // Build items for knapsack
-        struct Item {
-            int idx;
-            double profit_pct;
-            double capacity;     // max capital this cycle can absorb (liquidity)
-            double density;      // profit_pct / risk
-        };
-
-        std::vector<Item> items;
-        for (int i = 0; i < (int)profitable.size(); i++) {
-            double risk = profitable[i].path.size() - 1; // hops = risk proxy
-            double density = profitable[i].profit_percent / risk;
-            // Liquidity limit: shorter cycles can handle more capital
-            double capacity = total_capital * (0.6 / risk);
-            items.push_back({i, profitable[i].profit_percent, capacity, density});
-        }
-
-        // Greedy fractional knapsack: sort by density descending
-        std::sort(items.begin(), items.end(),
-                  [](const Item& a, const Item& b) { return a.density > b.density; });
-
-        double remaining = total_capital;
+        // Allocate capital proportionally based on density
         std::vector<Allocation> allocations;
         double total_profit = 0;
-
-        for (auto& item : items) {
-            if (remaining <= 0) break;
-            double alloc = std::min(remaining, item.capacity);
-            double profit = alloc * (item.profit_pct / 100.0);
+        for (size_t i = 0; i < profitable.size(); i++) {
+            double fraction = (sum_densities > 0.0) ? (densities[i] / sum_densities) : 0.0;
+            double alloc = total_capital * fraction;
+            double profit = alloc * (profitable[i].profit_percent / 100.0);
             allocations.push_back({
-                item.idx,
+                (int)i,
                 alloc,
                 profit,
-                item.density
+                densities[i]
             });
             total_profit += profit;
-            remaining -= alloc;
         }
 
         KnapsackResult result;

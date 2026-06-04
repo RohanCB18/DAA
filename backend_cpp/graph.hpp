@@ -45,6 +45,18 @@ struct KnapsackResult {
     double total_return_percent;
 };
 
+struct SimulationTick {
+    int tick_index;
+    std::vector<Edge> edges;
+};
+
+struct SimulationScenario {
+    int id;
+    std::string name;
+    std::string description;
+    std::vector<SimulationTick> ticks;
+};
+
 // ── Graph ───────────────────────────────────────────────────────────
 struct Graph {
     int n;
