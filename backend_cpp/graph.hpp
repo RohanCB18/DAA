@@ -26,7 +26,11 @@ struct Cycle {
     double product;              // product of all rates
     double profit_percent;       // (product - 1) * 100
 
-    bool isProfitable() const { return product > 1.0; }
+    bool isProfitable() const {
+        if (path.empty()) return false;
+        int hops = path.size() - 1;
+        return product > std::pow(1.0005, hops);
+    }
 };
 
 // ── Allocation (for knapsack) ───────────────────────────────────────
