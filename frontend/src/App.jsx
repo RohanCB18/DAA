@@ -2,6 +2,7 @@ import React, { useState } from 'react';
 import AboutPage from './pages/AboutPage.jsx';
 import TestPage from './pages/TestPage.jsx';
 import ComparisonPage from './pages/ComparisonPage.jsx';
+import FormulaePage from './pages/FormulaePage.jsx';
 
 export default function App() {
   const [page, setPage] = useState('about');
@@ -33,6 +34,12 @@ export default function App() {
           >
             Benchmark Console
           </button>
+          <button
+            className={`nav-btn ${page === 'formulae' ? 'active' : ''}`}
+            onClick={() => setPage('formulae')}
+          >
+            Formulations
+          </button>
         </nav>
         <div className="header-status">
           <div className="status-indicator"></div>
@@ -44,6 +51,7 @@ export default function App() {
       {page === 'about' && <AboutPage onNavigate={setPage} />}
       {page === 'test' && <TestPage />}
       {page === 'compare' && <ComparisonPage />}
+      {page === 'formulae' && <FormulaePage />}
     </div>
   );
 }
