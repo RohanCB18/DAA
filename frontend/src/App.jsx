@@ -3,6 +3,7 @@ import AboutPage from './pages/AboutPage.jsx';
 import TestPage from './pages/TestPage.jsx';
 import ComparisonPage from './pages/ComparisonPage.jsx';
 import FormulaePage from './pages/FormulaePage.jsx';
+import IndustryPage from './pages/IndustryPage.jsx';
 
 export default function App() {
   const [page, setPage] = useState('about');
@@ -40,6 +41,12 @@ export default function App() {
           >
             Formulations
           </button>
+          <button
+            className={`nav-btn ${page === 'industry' ? 'active' : ''}`}
+            onClick={() => setPage('industry')}
+          >
+            Industry Insights
+          </button>
         </nav>
         <div className="header-status">
           <div className="status-indicator"></div>
@@ -52,6 +59,7 @@ export default function App() {
       {page === 'test' && <TestPage />}
       {page === 'compare' && <ComparisonPage />}
       {page === 'formulae' && <FormulaePage />}
+      {page === 'industry' && <IndustryPage />}
     </div>
   );
 }
