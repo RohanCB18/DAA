@@ -284,6 +284,24 @@ export default function ComparisonPage() {
               </tr>
             </tbody>
           </table>
+
+          {/* Key Analytical Insights Panel */}
+          <div style={{ marginTop: '14px', borderTop: '1px solid var(--border-light)', paddingTop: '12px' }}>
+            <h3 style={{ fontSize: '0.9rem', color: 'var(--accent-indigo)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
+              💡 Key Analytical Insight: Algorithmic Divergence & Fee Efficiency
+            </h3>
+            <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45', marginTop: '6px' }}>
+              Observe the behavior at ticks <strong>6s</strong> and <strong>14s</strong>. Both algorithms find arbitrage, but they return different paths:
+            </p>
+            <ul style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: '1.45', marginLeft: '16px', marginTop: '4px', listStyleType: 'disc' }}>
+              <li style={{ marginBottom: '4px' }}>
+                <strong>Modified DFS</strong> selects the 4-hop path <code style={{ fontSize: '0.72rem', padding: '2px 4px', background: 'var(--bg-tertiary)' }}>INR → USD → GBP → EUR → INR</code> because it optimizes for the highest raw <strong>gross product</strong> (+0.78% / +1.00%) first, only accounting for execution fees passively after the search is complete.
+              </li>
+              <li>
+                <strong>Bellman-Ford</strong> selects the 3-hop path <code style={{ fontSize: '0.72rem', padding: '2px 4px', background: 'var(--bg-tertiary)' }}>INR → GBP → EUR → INR</code>. Because the 0.05% fee per-hop is embedded in its edge weights, it naturally minimizes path length (paying 3 fees instead of 4) to maximize the actual <strong>net yield</strong> (+0.59% vs. +0.58%), demonstrating the advantage of cost-aware optimization.
+              </li>
+            </ul>
+          </div>
         </div>
       )}
 
