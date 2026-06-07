@@ -118,43 +118,6 @@ export default function IndustryPage() {
           </div>
         </section>
 
-        {/* Section 3: Trader Perspective & Consensus */}
-        <section className="about-section">
-          <h2 className="section-title">
-            <span className="section-icon">💬</span>
-            3. Quantitative Trader & Industry Perspective
-          </h2>
-          
-          <div className="about-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
-            <p>
-              To gauge the practical utility of this software, we researched industry whitepapers, quant developer forums, 
-              and interview transcripts from algorithmic traders. Here is the industry consensus on how these systems operate:
-            </p>
-
-            <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', marginTop: '4px' }}>
-              {[
-                {
-                  q: "How do traders manage bid/ask spreads instead of mid-prices?",
-                  a: "In production, the graph does not use a single mid-market rate. It uses double directed edges for every pair. To go from USD to EUR, you buy EUR at the Ask price (Edge weight = -ln(Ask)). To go back, you sell EUR at the Bid price (Edge weight = -ln(1/Bid))."
-                },
-                {
-                  q: "Why is Bellman-Ford preferred over DFS/Dijkstra in pathfinding?",
-                  a: "DFS is highly sensitive to node degree and suffers from combinatorial explosion on larger networks. Dijkstra cannot handle negative weights (which are necessary to model log-transformed rates). Bellman-Ford handles negative weights natively, is highly deterministic (O(V * E)), and runs in under 15 microseconds, making it the perfect choice."
-                },
-                {
-                  q: "What is the biggest risk traders face in path arbitrage?",
-                  a: "Execution/Leg Risk. If your network connection to the exchange is slow, or if your algorithm takes too long to run, the prices will adjust before your orders arrive, causing a loss. This is why firms spend millions of dollars optimizing their C++ codebase and hosting their servers in the same data center as the exchange (co-location)."
-                }
-              ].map((qa, idx) => (
-                <div key={idx} style={{ borderBottom: '1px solid var(--border-light)', paddingBottom: '10px', marginBottom: '4px' }}>
-                  <strong style={{ fontSize: '0.82rem', color: 'var(--text-primary)', display: 'block', marginBottom: '2px' }}>🗣️ Q: {qa.q}</strong>
-                  <p style={{ fontSize: '0.78rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>{qa.a}</p>
-                </div>
-              ))}
-            </div>
-          </div>
-        </section>
-
       </div>
     </div>
   );
