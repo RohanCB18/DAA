@@ -145,10 +145,10 @@ export default function AboutPage({ onNavigate }) {
         </h2>
         <div className="steps-flow">
           {[
-            { step: '1', title: 'Market Snapshot', desc: 'A random dataset of exchange rates is loaded from 17 curated scenarios (High/Low/No profit).', icon: '📊' },
-            { step: '2', title: 'Graph Construction', desc: 'Currencies become nodes, exchange rates become directed weighted edges in the graph.', icon: '🕸️' },
-            { step: '3', title: 'Cycle Detection', desc: 'The selected algorithm scans for profitable cycles where the product of edge weights > 1.', icon: '🔍' },
-            { step: '4', title: 'Profit Calculation', desc: 'For each cycle, a step-by-step trade simulation computes the exact profit from ₹1,00,000.', icon: '💰' },
+            { step: '1', title: 'Market Snapshot', desc: 'Exchange rates are loaded dynamically for 10 sequential ticks across 4 curated market scenarios (Steady Growth, Flash Volatility, Flat Dry Market, and Knapsack Allocation).', icon: '📊' },
+            { step: '2', title: 'Graph Construction', desc: 'Currencies become nodes, and exchange rates become directed weighted edges in the graph, using a logarithmic transform (-ln(rate)) for Bellman-Ford.', icon: '🕸️' },
+            { step: '3', title: 'Cycle Detection', desc: 'The selected algorithm scans for cycles that are strictly net-profitable after accounting for a 0.05% transaction fee per hop.', icon: '🔍' },
+            { step: '4', title: 'Profit Calculation', desc: 'For each cycle, a step-by-step trade simulation computes the exact profit from ₹1,00,000, displaying real-time fee deductions and ledger logs.', icon: '💰' },
           ].map(s => (
             <div key={s.step} className="step-item">
               <div className="step-number">{s.icon}</div>
