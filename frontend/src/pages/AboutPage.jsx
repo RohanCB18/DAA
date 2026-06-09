@@ -14,14 +14,13 @@ export default function AboutPage({ onNavigate }) {
           and applies advanced algorithmic techniques to detect and exploit arbitrage opportunities in real time.
         </p>
         <button className="glow-btn" onClick={() => onNavigate('test')} style={{ marginTop: '16px' }}>
-          🚀 Launch Test Console
+          Launch Test Console
         </button>
       </section>
 
       {/* Problem Statement */}
       <section className="about-section">
         <h2 className="section-title">
-          <span className="section-icon">🎯</span>
           Problem Statement
         </h2>
         <div className="about-card">
@@ -41,24 +40,22 @@ export default function AboutPage({ onNavigate }) {
       {/* Currency Model */}
       <section className="about-section">
         <h2 className="section-title">
-          <span className="section-icon">💱</span>
           Currency Graph Model
         </h2>
         <div className="currency-grid">
           {[
-            { code: 'INR', name: 'Indian Rupee', color: '#f59e0b', flag: '🇮🇳' },
-            { code: 'USD', name: 'US Dollar', color: '#10b981', flag: '🇺🇸' },
-            { code: 'EUR', name: 'Euro', color: '#3b82f6', flag: '🇪🇺' },
-            { code: 'GBP', name: 'British Pound', color: '#8b5cf6', flag: '🇬🇧' },
-            { code: 'JPY', name: 'Japanese Yen', color: '#ef4444', flag: '🇯🇵' },
-            { code: 'CHF', name: 'Swiss Franc', color: '#ec4899', flag: '🇨🇭' },
-            { code: 'AUD', name: 'Australian Dollar', color: '#14b8a6', flag: '🇦🇺' },
-            { code: 'CAD', name: 'Canadian Dollar', color: '#f97316', flag: '🇨🇦' },
-            { code: 'SGD', name: 'Singapore Dollar', color: '#6366f1', flag: '🇸🇬' },
-            { code: 'HKD', name: 'Hong Kong Dollar', color: '#06b6d4', flag: '🇭🇰' },
+            { code: 'INR', name: 'Indian Rupee', color: '#f59e0b' },
+            { code: 'USD', name: 'US Dollar', color: '#10b981' },
+            { code: 'EUR', name: 'Euro', color: '#3b82f6' },
+            { code: 'GBP', name: 'British Pound', color: '#8b5cf6' },
+            { code: 'JPY', name: 'Japanese Yen', color: '#ef4444' },
+            { code: 'CHF', name: 'Swiss Franc', color: '#ec4899' },
+            { code: 'AUD', name: 'Australian Dollar', color: '#14b8a6' },
+            { code: 'CAD', name: 'Canadian Dollar', color: '#f97316' },
+            { code: 'SGD', name: 'Singapore Dollar', color: '#6366f1' },
+            { code: 'HKD', name: 'Hong Kong Dollar', color: '#06b6d4' },
           ].map(c => (
             <div key={c.code} className="currency-chip" style={{ borderColor: c.color }}>
-              <span className="chip-flag">{c.flag}</span>
               <span className="chip-code" style={{ color: c.color }}>{c.code}</span>
               <span className="chip-name">{c.name}</span>
             </div>
@@ -69,7 +66,6 @@ export default function AboutPage({ onNavigate }) {
       {/* Algorithms */}
       <section className="about-section">
         <h2 className="section-title">
-          <span className="section-icon">⚙️</span>
           Algorithms Implemented
         </h2>
         <div className="algo-grid">
@@ -140,18 +136,17 @@ export default function AboutPage({ onNavigate }) {
       {/* How It Works */}
       <section className="about-section">
         <h2 className="section-title">
-          <span className="section-icon">🔄</span>
           How It Works
         </h2>
         <div className="steps-flow">
           {[
-            { step: '1', title: 'Market Snapshot', desc: 'Exchange rates are loaded dynamically for 10 sequential ticks across 4 curated market scenarios (Steady Growth, Flash Volatility, Flat Dry Market, and Knapsack Allocation).', icon: '📊' },
-            { step: '2', title: 'Graph Construction', desc: 'Currencies become nodes, and exchange rates become directed weighted edges in the graph, using a logarithmic transform (-ln(rate)) for Bellman-Ford.', icon: '🕸️' },
-            { step: '3', title: 'Cycle Detection', desc: 'The selected algorithm scans for cycles that are strictly net-profitable after accounting for a 0.05% transaction fee per hop.', icon: '🔍' },
-            { step: '4', title: 'Profit Calculation', desc: 'For each cycle, a step-by-step trade simulation computes the exact profit from ₹1,00,000, displaying real-time fee deductions and ledger logs.', icon: '💰' },
+            { step: '1', title: 'Market Snapshot', desc: 'Exchange rates are loaded dynamically for 10 sequential ticks across 4 curated market scenarios (Steady Growth, Flash Volatility, Flat Dry Market, and Knapsack Allocation).' },
+            { step: '2', title: 'Graph Construction', desc: 'Currencies become nodes, and exchange rates become directed weighted edges in the graph, using a logarithmic transform (-ln(rate)) for Bellman-Ford.' },
+            { step: '3', title: 'Cycle Detection', desc: 'The selected algorithm scans for cycles that are strictly net-profitable after accounting for a 0.05% transaction fee per hop.' },
+            { step: '4', title: 'Profit Calculation', desc: 'For each cycle, a step-by-step trade simulation computes the exact profit from ₹1,00,000, displaying real-time fee deductions and ledger logs.' },
           ].map(s => (
             <div key={s.step} className="step-item">
-              <div className="step-number">{s.icon}</div>
+              <div className="step-number" style={{ fontSize: '1.1rem', fontWeight: 'bold', width: '28px', height: '28px', background: 'var(--bg-tertiary)', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyOrigin: 'center', justifyContent: 'center', color: 'var(--accent-indigo)' }}>{s.step}</div>
               <div className="step-content">
                 <h4>{s.title}</h4>
                 <p>{s.desc}</p>
@@ -164,7 +159,6 @@ export default function AboutPage({ onNavigate }) {
       {/* Tech Stack */}
       <section className="about-section">
         <h2 className="section-title">
-          <span className="section-icon">🏗️</span>
           Tech Stack
         </h2>
         <div className="tech-grid">
@@ -191,7 +185,7 @@ export default function AboutPage({ onNavigate }) {
         <h2>Ready to detect arbitrage?</h2>
         <p>Launch the test console to run live detection on randomized market data.</p>
         <button className="glow-btn" onClick={() => onNavigate('test')} style={{ marginTop: '12px', fontSize: '0.9rem' }}>
-          🚀 Go to Test Console →
+          Launch Test Console →
         </button>
       </section>
     </div>

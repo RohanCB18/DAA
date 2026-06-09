@@ -17,7 +17,7 @@ export default function IndustryPage() {
       {/* Action Item Box for Evaluators */}
       <div className="glass-card" style={{ padding: '14px', borderLeft: '4px solid var(--accent-purple)', background: 'rgba(139, 92, 246, 0.04)', marginBottom: '16px', borderRadius: 'var(--radius-md)', animation: 'slide-in 0.3s ease-out' }}>
         <h4 style={{ color: 'var(--accent-purple)', fontSize: '0.9rem', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px', margin: 0 }}>
-          📌 Industry Alignment & Evaluator Feedback Check
+          Industry Alignment & Evaluator Feedback Check
         </h4>
         <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45', marginTop: '6px' }}>
           <strong>How Real-World Traders Do It:</strong> During our previous project review, the evaluation panel suggested consulting professional traders for feedback. Since proprietary traders operate under strict confidentiality bounds, we conducted exhaustive research on institutional HFT standards. This page demonstrates that our C++ pathfinder and multi-leg net profitability checks mirror the exact systems and execution protocols deployed on institutional trading desks.
@@ -29,7 +29,6 @@ export default function IndustryPage() {
         {/* Section 1: The Live Execution Pipeline */}
         <section className="about-section">
           <h2 className="section-title">
-            <span className="section-icon">🌐</span>
             1. Production Software Pipeline
           </h2>
           
@@ -55,7 +54,7 @@ export default function IndustryPage() {
             </div>
 
             <div className="glass-card" style={{ padding: '12px', background: 'rgba(99, 102, 241, 0.04)', border: '1px solid var(--border-medium)', marginTop: '4px' }}>
-              <h4 style={{ color: 'var(--accent-indigo)', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '6px' }}>💡 Operational Execution Highlights</h4>
+              <h4 style={{ color: 'var(--accent-indigo)', fontSize: '0.85rem', fontWeight: 'bold', marginBottom: '6px' }}>Operational Execution Highlights</h4>
               <ul style={{ paddingLeft: '16px', listStyleType: 'disc', fontSize: '0.78rem', color: 'var(--text-secondary)', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <li>
                   <strong>Event-Driven Hot Loops:</strong> Execution is never time-based (e.g. "every second"). An interval of one second represents an eternity in HFT. The solver thread runs continuously in an infinite loop, recalculating paths immediately upon receiving any price change.
@@ -71,7 +70,6 @@ export default function IndustryPage() {
         {/* Section 2: Hardware Acceleration */}
         <section className="about-section">
           <h2 className="section-title">
-            <span className="section-icon">⚡</span>
             2. The Latency Race & Hardware Acceleration
           </h2>
           
@@ -89,8 +87,8 @@ export default function IndustryPage() {
                 <h4 style={{ color: 'var(--accent-green)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '6px' }}>FPGA Custom Silicon</h4>
                 <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                   Firms code their pathfinding algorithms directly in hardware descriptive languages (Verilog/VHDL) 
-                  and burn them onto **Field Programmable Gate Arrays (FPGAs)**. The chip updates the graph 
-                  and generates order packets in **nanoseconds**, bypassing the CPU entirely.
+                  and burn them onto <strong>Field Programmable Gate Arrays (FPGAs)</strong>. The chip updates the graph 
+                  and generates order packets in <strong>nanoseconds</strong>, bypassing the CPU entirely.
                 </p>
               </div>
 
@@ -99,7 +97,7 @@ export default function IndustryPage() {
                 <h4 style={{ color: 'var(--accent-blue)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '6px' }}>Kernel Bypass (Solarflare)</h4>
                 <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                   Standard network packets must go through the OS kernel network stack. Desks use specialized 
-                  network interface cards (NICs) with **Kernel Bypass** technology (like OpenOnload) 
+                  network interface cards (NICs) with <strong>Kernel Bypass</strong> technology (like OpenOnload) 
                   which copies network bytes directly to user-space application memory in under a microsecond.
                 </p>
               </div>
@@ -109,7 +107,7 @@ export default function IndustryPage() {
                 <h4 style={{ color: 'var(--accent-amber)', fontSize: '0.85rem', fontWeight: 'bold', textTransform: 'uppercase', marginBottom: '6px' }}>Microwave Networks</h4>
                 <p style={{ fontSize: '0.76rem', color: 'var(--text-muted)', lineHeight: '1.4' }}>
                   For cross-venue arbitrage (chasing price mismatches between geographically separated exchanges), 
-                  firms transmit price updates via **Microwave Radio Waves** beamed between towers, 
+                  firms transmit price updates via <strong>Microwave Radio Waves</strong> beamed between towers, 
                   which travel faster through the air than light does through fiber optic glass cables.
                 </p>
               </div>

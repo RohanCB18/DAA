@@ -272,8 +272,8 @@ export default function ComparisonPage() {
               </tr>
               <tr style={{ borderBottom: '1px solid var(--border-light)' }}>
                 <td style={{ padding: '8px 6px', fontWeight: 'bold' }}>Arbitrage Found</td>
-                <td style={{ padding: '8px 6px' }}>{currentResult.dfs.arbitrage_found ? '✅ Yes' : '❌ No'}</td>
-                <td style={{ padding: '8px 6px' }}>{currentResult.bellman_ford.arbitrage_found ? '✅ Yes' : '❌ No'}</td>
+                <td style={{ padding: '8px 6px' }}>{currentResult.dfs.arbitrage_found ? 'Yes' : 'No'}</td>
+                <td style={{ padding: '8px 6px' }}>{currentResult.bellman_ford.arbitrage_found ? 'Yes' : 'No'}</td>
                 <td style={{ padding: '8px 6px' }}>
                   {currentResult.dfs.arbitrage_found === currentResult.bellman_ford.arbitrage_found ? (
                     <span style={{ color: 'var(--accent-green)' }}>Algorithms are in agreement</span>
@@ -288,7 +288,7 @@ export default function ComparisonPage() {
           {/* Key Analytical Insights Panel */}
           <div style={{ marginTop: '14px', borderTop: '1px solid var(--border-light)', paddingTop: '12px' }}>
             <h3 style={{ fontSize: '0.9rem', color: 'var(--accent-indigo)', fontWeight: 'bold', display: 'flex', alignItems: 'center', gap: '6px' }}>
-              💡 Key Analytical Insight: Algorithmic Divergence & Fee Efficiency
+              Key Analytical Insight: Algorithmic Divergence & Fee Efficiency
             </h3>
             <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', lineHeight: '1.45', marginTop: '6px' }}>
               Observe the behavior at ticks <strong>6s</strong> and <strong>14s</strong>. Both algorithms find arbitrage, but they return different paths:

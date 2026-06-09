@@ -73,7 +73,7 @@ export default function CurrencyGraph({ graphData, cycles }) {
           {hasEdges && graphData.links.filter(l => !activeEdges.has(`${l.from}->${l.to}`)).map((l,i) => {
             const lp=labelPos(l.from,l.to);
             const hasCycle = activeEdges.size > 0;
-            return (<g key={`ie-${i}`} style={{animation:'fade-in 0.3s ease',animationDelay:`${i*15}ms`,animationFillMode:'both'}}>
+            return (<g key={`ie-${l.from}-${l.to}`}>
               <path d={edgePath(l.from,l.to)} stroke="#94a3b8" strokeWidth={1.5}
                 markerEnd="url(#ad)" opacity={hasCycle ? 0.15 : 0.7} fill="none"/>
               {l.rate && !hasCycle && <text x={lp.x} y={lp.y} fontSize="8px" fontWeight={500}
@@ -84,7 +84,7 @@ export default function CurrencyGraph({ graphData, cycles }) {
           {/* Layer 2: Active cycle edges — clean green, on top */}
           {hasEdges && graphData.links.filter(l => activeEdges.has(`${l.from}->${l.to}`)).map((l,i) => {
             const lp=labelPos(l.from,l.to);
-            return (<g key={`ae-${i}`}>
+            return (<g key={`ae-${l.from}-${l.to}`}>
               <path d={edgePath(l.from,l.to)} stroke="#10b981" strokeWidth={2.5}
                 markerEnd="url(#aa)" opacity={1} fill="none"/>
               {l.rate && <text x={lp.x} y={lp.y} fontSize="9px" fontWeight={700}

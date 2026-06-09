@@ -20,12 +20,11 @@ export default function FormulaePage() {
         {/* SECTION 1: Triangular Arbitrage & Log Transformation */}
         <section className="about-section">
           <h2 className="section-title">
-            <span className="section-icon">🧮</span>
             1. Logarithmic Weight Transformation
           </h2>
           <div className="about-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <p>
-              In currency markets, arbitrage is a **multiplicative** phenomenon. If you trade through a loop of 
+              In currency markets, arbitrage is a <strong>multiplicative</strong> phenomenon. If you trade through a loop of 
               currencies, you start with an initial amount and multiply it by each rate along the path. 
               A cycle of currencies is profitable if the product of their exchange rates is greater than 1:
             </p>
@@ -41,9 +40,9 @@ export default function FormulaePage() {
             </div>
 
             <p>
-              However, standard pathfinding algorithms (like Bellman-Ford) are **additive**—they find the shortest 
+              However, standard pathfinding algorithms (like Bellman-Ford) are <strong>additive</strong>—they find the shortest 
               path by adding weights. To map this multiplicative problem onto an additive algorithm, we apply the 
-              **Negative Logarithmic Transformation** to each rate:
+              <strong>Negative Logarithmic Transformation</strong> to each rate:
             </p>
 
             {/* Formula Block */}
@@ -71,8 +70,8 @@ export default function FormulaePage() {
             </div>
 
             <p style={{ marginTop: '4px' }}>
-              This mathematically proves that a **profitable arbitrage cycle** (product &gt; 1.0) is identical to a 
-              **negative-weight cycle** (sum of weights &lt; 0.0) in the transformed log-weight graph network.
+              This mathematically proves that a <strong>profitable arbitrage cycle</strong> (product &gt; 1.0) is identical to a 
+              <strong>negative-weight cycle</strong> (sum of weights &lt; 0.0) in the transformed log-weight graph network.
             </p>
           </div>
         </section>
@@ -80,13 +79,12 @@ export default function FormulaePage() {
         {/* SECTION 2: Transaction Fees & Net Profitability */}
         <section className="about-section">
           <h2 className="section-title">
-            <span className="section-icon">💸</span>
             2. Transaction Cost Adjustment
           </h2>
           <div className="about-card" style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
             <p>
               In real-world markets, each transaction swap incurs a percentage fee. Our engine models this as a 
-              **0.05% fee per hop** (or $f = 0.0005$). In a path of **k** hops, your final capital is reduced by the compounding fee:
+              <strong>0.05% fee per hop</strong> (or f = 0.0005). In a path of <i>k</i> hops, your final capital is reduced by the compounding fee:
             </p>
 
             {/* Formula Block */}
@@ -139,7 +137,6 @@ export default function FormulaePage() {
         {/* SECTION 3: Side-by-Side Algorithm Formulations */}
         <section className="about-section">
           <h2 className="section-title">
-            <span className="section-icon">⚙️</span>
             3. Algorithm Formulations
           </h2>
           <div className="algo-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>

@@ -463,10 +463,10 @@ export default function TestPage() {
         <strong style={{ fontSize: '0.85rem' }}>Engine Mode:</strong>
         <div className="header-nav">
           <button className={`nav-btn ${!isSimMode ? 'active' : ''}`} onClick={() => { setIsSimMode(false); handleStopSim(); }} disabled={simIsRunning}>
-            📸 Single Snapshot Mode
+            Single Snapshot Mode
           </button>
           <button className={`nav-btn ${isSimMode ? 'active' : ''}`} onClick={() => { setIsSimMode(true); setResult(null); }} disabled={simIsRunning}>
-            ⏳ 20s Live Simulation Mode
+            20s Live Simulation Mode
           </button>
         </div>
       </div>
@@ -507,7 +507,7 @@ export default function TestPage() {
         {!isSimMode ? (
           <button className="glow-btn" onClick={handleGenerate} disabled={loading}
             style={{ fontSize: '0.85rem', cursor: loading ? 'not-allowed' : 'pointer' }}>
-            {loading ? '⏳ Processing...' : '🎲 Generate Rates & Detect'}
+            {loading ? 'Processing...' : 'Generate Rates & Detect'}
           </button>
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
@@ -526,21 +526,21 @@ export default function TestPage() {
                   ))}
               </select>
               <button className="glow-btn" onClick={handleStartSim} disabled={simIsRunning && !simIsPaused} style={{ fontSize: '0.8rem', padding: '8px 14px' }}>
-                {simIsRunning ? '🔄 Restart' : '▶ Start'}
+                {simIsRunning ? 'Restart' : 'Start'}
               </button>
               {simIsRunning && (
                 <button className="nav-btn" onClick={handlePauseSim} style={{ padding: '6px 12px', border: '1px solid var(--border-medium)', background: 'var(--bg-secondary)' }}>
-                  {simIsPaused ? '▶ Resume' : '⏸ Pause'}
+                  {simIsPaused ? 'Resume' : 'Pause'}
                 </button>
               )}
               {simIsRunning && (
                 <button className="nav-btn" onClick={handleStopSim} style={{ padding: '6px 12px', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', background: 'var(--accent-red-light)' }}>
-                  ⏹ Stop
+                  Stop
                 </button>
               )}
               {simIsRunning && (
                 <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', marginLeft: '6px', fontWeight: 'bold' }}>
-                  ⏳ {simTimer}s / 20s
+                  {simTimer}s / 20s
                 </span>
               )}
             </div>
@@ -558,7 +558,7 @@ export default function TestPage() {
             {isSimMode && (
               <div className="glass-card" style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid var(--accent-green)', padding: '10px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
                 <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-green)' }}>💰 HFT Mock Trading Wallet</span>
+                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-green)' }}>HFT Mock Trading Wallet</span>
                   <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>
                     <input type="checkbox" checked={autoTrade} onChange={(e) => setAutoTrade(e.target.checked)} style={{ transform: 'scale(1.1)' }} />
                     Auto-Trade
@@ -585,7 +585,7 @@ export default function TestPage() {
             {isSimMode && simTimer >= 20 && !simIsRunning ? (
               <div className="glass-card" style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid var(--accent-green)', borderRadius: '10px', textAlign: 'center', margin: '4px 0', animation: 'scale-in 0.3s ease-out' }}>
                 <h3 style={{ color: 'var(--accent-green)', fontSize: '1.05rem', fontWeight: 'bold', marginBottom: '6px' }}>
-                  🏁 Simulation Completed Successfully
+                  Simulation Completed Successfully
                 </h3>
                 <p style={{ fontSize: '0.8rem', color: 'var(--text-primary)' }}>
                   The 20-second real-time arbitrage HFT run is complete.
@@ -607,7 +607,7 @@ export default function TestPage() {
                 </div>
                 {mode === 'knapsack' && (
                   <div style={{ marginTop: '14px', textAlign: 'left', borderTop: '1px solid var(--border-medium)', paddingTop: '10px' }}>
-                    <h4 style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 'bold' }}>📊 Proportional Allocation Splits:</h4>
+                    <h4 style={{ fontSize: '0.78rem', color: 'var(--text-muted)', marginBottom: '8px', textTransform: 'uppercase', fontWeight: 'bold' }}>Proportional Allocation Splits:</h4>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '0.72rem', color: 'var(--text-primary)' }}>
                       {getSimSummarySplits()}
                     </div>
@@ -619,7 +619,7 @@ export default function TestPage() {
                 {result.arbitrage_found ? (
                   <>
                     <h3 style={{ color: 'var(--accent-green)', fontSize: '1.05rem', marginBottom: '8px' }}>
-                      ✅ Arbitrage Cycle Active
+                      Arbitrage Cycle Active
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
                       {result.cycle.steps.map((step, idx) => (
@@ -645,7 +645,7 @@ export default function TestPage() {
                   </>
                 ) : (
                   <div className="no-arb">
-                    <h3>❌ No Arbitrage Available</h3>
+                    <h3>No Arbitrage Available</h3>
                     <p>All cycle products ≤ 1.0 — no profitable path exists in this market snapshot.</p>
                   </div>
                 )}
@@ -656,7 +656,7 @@ export default function TestPage() {
                 {result.arbitrage_found ? (
                   <>
                     <h3 style={{ color: 'var(--accent-purple)', fontSize: '1.05rem', marginBottom: '12px' }}>
-                      📊 Optimised Allocation — {result.cycles.length} profitable cycle{result.cycles.length > 1 ? 's' : ''}
+                      Optimised Allocation — {result.cycles.length} profitable cycle{result.cycles.length > 1 ? 's' : ''}
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
                       {result.allocation.allocations.map((alloc, idx) => {
@@ -686,7 +686,7 @@ export default function TestPage() {
                   </>
                 ) : (
                   <div className="no-arb">
-                    <h3>❌ No Profitable Cycles Found</h3>
+                    <h3>No Profitable Cycles Found</h3>
                   </div>
                 )}
               </div>
@@ -695,7 +695,7 @@ export default function TestPage() {
             {/* Trading Ledger Table in Simulation Mode */}
             {isSimMode && ledger.length > 0 && (
               <div style={{ marginTop: '10px' }}>
-                <h3 style={{ fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '4px' }}>📜 Mock Trade Ledger</h3>
+                <h3 style={{ fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '4px' }}>Mock Trade Ledger</h3>
                 <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--border-light)', borderRadius: '6px' }}>
                   <table style={{ width: '100%', borderCollapse: 'collapse', fontSize: '0.7rem', textAlign: 'left' }}>
                     <thead>
@@ -739,7 +739,7 @@ export default function TestPage() {
       )}
       {loading && (
         <div className="placeholder-text">
-          <h2 style={{ color: 'var(--accent-blue)' }}>⏳ Running algorithm on market graph...</h2>
+          <h2 style={{ color: 'var(--accent-blue)' }}>Running algorithm on market graph...</h2>
         </div>
       )}
     </>
