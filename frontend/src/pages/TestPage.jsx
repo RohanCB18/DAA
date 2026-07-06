@@ -1,17 +1,14 @@
 import React, { useState, useEffect, useRef } from 'react';
 import CurrencyGraph from '../components/CurrencyGraph.jsx';
 
-const API_URL = 'http://127.0.0.1:8081/api/run';
 const API_TICK_URL = 'http://127.0.0.1:8081/api/simulation/tick';
 const API_LIST_URL = 'http://127.0.0.1:8081/api/simulation/list';
 
 export default function TestPage() {
-  const [isSimMode, setIsSimMode] = useState(false);
   const [mode, setMode] = useState('dfs');
   const [loading, setLoading] = useState(false);
   const [result, setResult] = useState(null);
   const [rateMap, setRateMap] = useState({});
-  const [animatedStep, setAnimatedStep] = useState(-1);
   const animationRef = useRef(null);
 
   // Simulation states
@@ -62,54 +59,6 @@ export default function TestPage() {
   }, []);
 
   // ───────────────────────────────────────────────────────────────────
-  // Snapshot Mode Trigger
-  // ───────────────────────────────────────────────────────────────────
-  const handleGenerate = async () => {
-    setLoading(true);
-    setResult(null);
-    setRateMap({});
-    setAnimatedStep(-1);
-    if (animationRef.current) clearInterval(animationRef.current);
-
-    try {
-      const res = await fetch(API_URL, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mode })
-      });
-      const data = await res.json();
-
-      const rates = {};
-      data.edges.forEach(e => { rates[`${e.from}->${e.to}`] = e.rate; });
-      setRateMap(rates);
-      setResult(data);
-
-      setTimeout(() => {
-        if (data.arbitrage_found && data.cycle && data.mode !== 'knapsack') {
-          let step = 0;
-          const totalSteps = data.cycle.steps.length;
-          setAnimatedStep(0);
-          animationRef.current = setInterval(() => {
-            step++;
-            if (step <= totalSteps) {
-              setAnimatedStep(step);
-            } else {
-              clearInterval(animationRef.current);
-            }
-          }, 1000);
-        } else if (data.mode === 'knapsack') {
-          setAnimatedStep(999);
-        }
-      }, 800);
-    } catch (err) {
-      console.error('Error:', err);
-      alert('Failed to connect to backend. Make sure server.exe is running.');
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // ───────────────────────────────────────────────────────────────────
   // Simulation Mode Triggers
   // ───────────────────────────────────────────────────────────────────
   const handleStartSim = () => {
@@ -124,7 +73,6 @@ export default function TestPage() {
     processedTicksRef.current.clear();
     setResult(null);
     setRateMap({});
-    setAnimatedStep(-1);
     if (animationRef.current) clearInterval(animationRef.current);
   };
 
@@ -145,7 +93,7 @@ export default function TestPage() {
 
   // Run the simulation loop
   useEffect(() => {
-    if (!isSimMode || !simIsRunning || simIsPaused || simTick < 0 || simTick >= 10) {
+    if (!simIsRunning || simIsPaused || simTick < 0 || simTick >= 10) {
       if (simTick >= 10) {
         setSimIsRunning(false);
       }
@@ -332,7 +280,7 @@ export default function TestPage() {
       active = false;
       clearTimeout(animationRef.current);
     };
-  }, [isSimMode, simIsRunning, simIsPaused, simTick, selectedSimId, mode, autoTrade]);
+  }, [simIsRunning, simIsPaused, simTick, selectedSimId, mode, autoTrade]);
 
   useEffect(() => () => {
     if (animationRef.current) clearInterval(animationRef.current);
@@ -347,12 +295,7 @@ export default function TestPage() {
       return activeCycle ? [activeCycle] : [];
     }
     if (result.cycle) {
-      if (isSimMode) return [result.cycle];
-      if (animatedStep >= 0) {
-        const currentPath = result.cycle.path.slice(0, animatedStep + 1);
-        if (currentPath.length < 2) return [];
-        return [{ ...result.cycle, path: currentPath }];
-      }
+      return [result.cycle];
     }
     return [];
   };
@@ -458,19 +401,6 @@ export default function TestPage() {
 
   return (
     <>
-      {/* Selector: Snapshots vs Live 20s Simulation */}
-      <div className="glass-card" style={{ padding: '8px 16px', display: 'flex', gap: '20px', alignItems: 'center', flexShrink: 0 }}>
-        <strong style={{ fontSize: '0.85rem' }}>Engine Mode:</strong>
-        <div className="header-nav">
-          <button className={`nav-btn ${!isSimMode ? 'active' : ''}`} onClick={() => { setIsSimMode(false); handleStopSim(); }} disabled={simIsRunning}>
-            Single Snapshot Mode
-          </button>
-          <button className={`nav-btn ${isSimMode ? 'active' : ''}`} onClick={() => { setIsSimMode(true); setResult(null); }} disabled={simIsRunning}>
-            20s Live Simulation Mode
-          </button>
-        </div>
-      </div>
-
       {/* Mode + Controls */}
       <div className="glass-card" style={{ padding: '10px 16px', display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '10px', flexShrink: 0 }}>
         <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
@@ -488,7 +418,6 @@ export default function TestPage() {
                   setMode(m.id);
                   setResult(null);
                   setRateMap({});
-                  setAnimatedStep(-1);
                   if (m.id === 'knapsack') {
                     setSelectedSimId(4);
                   } else {
@@ -503,49 +432,42 @@ export default function TestPage() {
           </div>
         </div>
 
-        {/* Action Controls */}
-        {!isSimMode ? (
-          <button className="glow-btn" onClick={handleGenerate} disabled={loading}
-            style={{ fontSize: '0.85rem', cursor: loading ? 'not-allowed' : 'pointer' }}>
-            {loading ? 'Processing...' : 'Generate Rates & Detect'}
-          </button>
-        ) : (
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
-            <strong style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Simulation Scenarios</strong>
-            <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
-              <select
-                value={selectedSimId}
-                onChange={(e) => setSelectedSimId(Number(e.target.value))}
-                disabled={simIsRunning}
-                style={{ padding: '6px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-medium)', fontSize: '0.8rem', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
-              >
-                {simScenarios
-                  .filter(s => mode === 'knapsack' ? s.id === 4 : s.id !== 4)
-                  .map(s => (
-                    <option key={s.id} value={s.id}>{s.name}</option>
-                  ))}
-              </select>
-              <button className="glow-btn" onClick={handleStartSim} disabled={simIsRunning && !simIsPaused} style={{ fontSize: '0.8rem', padding: '8px 14px' }}>
-                {simIsRunning ? 'Restart' : 'Start'}
+        {/* Simulation Controls */}
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+          <strong style={{ fontSize: '0.75rem', textTransform: 'uppercase', color: 'var(--text-muted)' }}>Simulation Scenarios</strong>
+          <div style={{ display: 'flex', gap: '8px', alignItems: 'center' }}>
+            <select
+              value={selectedSimId}
+              onChange={(e) => setSelectedSimId(Number(e.target.value))}
+              disabled={simIsRunning}
+              style={{ padding: '6px 10px', borderRadius: 'var(--radius-sm)', border: '1px solid var(--border-medium)', fontSize: '0.8rem', background: 'var(--bg-secondary)', color: 'var(--text-primary)' }}
+            >
+              {simScenarios
+                .filter(s => mode === 'knapsack' ? s.id === 4 : s.id !== 4)
+                .map(s => (
+                  <option key={s.id} value={s.id}>{s.name}</option>
+                ))}
+            </select>
+            <button className="glow-btn" onClick={handleStartSim} disabled={simIsRunning && !simIsPaused} style={{ fontSize: '0.8rem', padding: '8px 14px' }}>
+              {simIsRunning ? 'Restart' : 'Start Simulation'}
+            </button>
+            {simIsRunning && (
+              <button className="nav-btn" onClick={handlePauseSim} style={{ padding: '6px 12px', border: '1px solid var(--border-medium)', background: 'var(--bg-secondary)' }}>
+                {simIsPaused ? 'Resume' : 'Pause'}
               </button>
-              {simIsRunning && (
-                <button className="nav-btn" onClick={handlePauseSim} style={{ padding: '6px 12px', border: '1px solid var(--border-medium)', background: 'var(--bg-secondary)' }}>
-                  {simIsPaused ? 'Resume' : 'Pause'}
-                </button>
-              )}
-              {simIsRunning && (
-                <button className="nav-btn" onClick={handleStopSim} style={{ padding: '6px 12px', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', background: 'var(--accent-red-light)' }}>
-                  Stop
-                </button>
-              )}
-              {simIsRunning && (
-                <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', marginLeft: '6px', fontWeight: 'bold' }}>
-                  {simTimer}s / 20s
-                </span>
-              )}
-            </div>
+            )}
+            {simIsRunning && (
+              <button className="nav-btn" onClick={handleStopSim} style={{ padding: '6px 12px', border: '1px solid var(--accent-red)', color: 'var(--accent-red)', background: 'var(--accent-red-light)' }}>
+                Stop
+              </button>
+            )}
+            {simIsRunning && (
+              <span style={{ fontFamily: 'var(--font-mono)', fontSize: '0.85rem', marginLeft: '6px', fontWeight: 'bold' }}>
+                {simTimer}s / 20s
+              </span>
+            )}
           </div>
-        )}
+        </div>
       </div>
 
       {/* Main Content: Graph + Results */}
@@ -555,26 +477,24 @@ export default function TestPage() {
         {result && (
           <div className="glass-card result-panel" style={{ padding: '14px', display: 'flex', flexDirection: 'column', gap: '8px', animation: 'slide-in 0.4s ease-out', overflowY: 'auto' }}>
             {/* Simulation Dashboard overlay */}
-            {isSimMode && (
-              <div className="glass-card" style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid var(--accent-green)', padding: '10px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-green)' }}>HFT Mock Trading Wallet</span>
-                  <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>
-                    <input type="checkbox" checked={autoTrade} onChange={(e) => setAutoTrade(e.target.checked)} style={{ transform: 'scale(1.1)' }} />
-                    Auto-Trade
-                  </label>
-                </div>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
-                  <h1 style={{ fontSize: '1.4rem', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
-                    ₹{walletBalance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-                  </h1>
-                  <span style={{ fontSize: '0.78rem', color: walletBalance >= 100000.0 ? 'var(--accent-green)' : 'var(--accent-red)', fontWeight: 'bold' }}>
-                    {walletBalance >= 100000.0 ? '+' : ''}{((walletBalance - 100000.0)/1000).toFixed(2)}% net returns
-                  </span>
-                </div>
-                {balanceHistory.length > 1 && renderBalanceChart()}
+            <div className="glass-card" style={{ background: 'rgba(16, 185, 129, 0.04)', border: '1px solid var(--accent-green)', padding: '10px', borderRadius: '8px', display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                <span style={{ fontSize: '0.75rem', fontWeight: 700, textTransform: 'uppercase', color: 'var(--accent-green)' }}>HFT Mock Trading Wallet</span>
+                <label style={{ display: 'flex', alignItems: 'center', gap: '4px', fontSize: '0.75rem', cursor: 'pointer' }}>
+                  <input type="checkbox" checked={autoTrade} onChange={(e) => setAutoTrade(e.target.checked)} style={{ transform: 'scale(1.1)' }} />
+                  Auto-Trade
+                </label>
               </div>
-            )}
+              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'baseline', marginTop: '2px' }}>
+                <h1 style={{ fontSize: '1.4rem', fontWeight: '800', fontFamily: 'var(--font-mono)', color: 'var(--accent-green)' }}>
+                  ₹{walletBalance.toLocaleString('en-IN', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+                </h1>
+                <span style={{ fontSize: '0.78rem', color: walletBalance >= 100000.0 ? 'var(--accent-green)' : 'var(--accent-red)', fontWeight: 'bold' }}>
+                  {walletBalance >= 100000.0 ? '+' : ''}{((walletBalance - 100000.0)/1000).toFixed(2)}% net returns
+                </span>
+              </div>
+              {balanceHistory.length > 1 && renderBalanceChart()}
+            </div>
 
             <h2>Detection Results</h2>
             <div className="algo-info">
@@ -582,7 +502,7 @@ export default function TestPage() {
               <p>{result.algorithm_description}</p>
             </div>
 
-            {isSimMode && simTimer >= 20 && !simIsRunning ? (
+            {simTimer >= 20 && !simIsRunning ? (
               <div className="glass-card" style={{ padding: '16px', background: 'rgba(16, 185, 129, 0.08)', border: '1px solid var(--accent-green)', borderRadius: '10px', textAlign: 'center', margin: '4px 0', animation: 'scale-in 0.3s ease-out' }}>
                 <h3 style={{ color: 'var(--accent-green)', fontSize: '1.05rem', fontWeight: 'bold', marginBottom: '6px' }}>
                   Simulation Completed Successfully
@@ -614,7 +534,7 @@ export default function TestPage() {
                   </div>
                 )}
               </div>
-            ) : result.mode !== 'knapsack' ? (
+            ) : (
               <div>
                 {result.arbitrage_found ? (
                   <>
@@ -622,7 +542,7 @@ export default function TestPage() {
                       Arbitrage Cycle Active
                     </h3>
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-                      {result.cycle.steps.map((step, idx) => (
+                      {result.mode !== 'knapsack' && result.cycle && result.cycle.steps.map((step, idx) => (
                         <div key={idx} className="calc-step visible" style={{ padding: '4px 8px', fontSize: '0.75rem' }}>
                           ₹{step.amount_before.toLocaleString('en-IN', {minimumFractionDigits: 2, maximumFractionDigits: 2})}
                           {' × '}{step.rate.toFixed(4)}{' = '}
@@ -634,34 +554,9 @@ export default function TestPage() {
                           </span>
                         </div>
                       ))}
-                    </div>
-
-                    <div className="final-profit" style={{ marginTop: '10px', padding: '8px' }}>
-                      <h3>Cycle Profit Yield</h3>
-                      <div className="profit-value" style={{ fontSize: '1.1rem' }}>
-                        +{result.cycle.profit_percent.toFixed(2)}%
-                      </div>
-                    </div>
-                  </>
-                ) : (
-                  <div className="no-arb">
-                    <h3>No Arbitrage Available</h3>
-                    <p>All cycle products ≤ 1.0 — no profitable path exists in this market snapshot.</p>
-                  </div>
-                )}
-              </div>
-            ) : (
-              <div>
-                {/* Knapsack mode in snapshot view */}
-                {result.arbitrage_found ? (
-                  <>
-                    <h3 style={{ color: 'var(--accent-purple)', fontSize: '1.05rem', marginBottom: '12px' }}>
-                      Optimised Allocation — {result.cycles.length} profitable cycle{result.cycles.length > 1 ? 's' : ''}
-                    </h3>
-                    <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
-                      {result.allocation.allocations.map((alloc, idx) => {
+                      {result.mode === 'knapsack' && result.cycles && result.allocation && result.allocation.allocations.map((alloc, idx) => {
                         const cycle = result.cycles[alloc.cycle_index];
-                        const pct = (alloc.capital / result.initial_amount) * 100;
+                        const pct = (alloc.capital / walletBalanceRef.current) * 100;
                         return (
                           <div key={idx} className="alloc-item">
                             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '6px' }}>
@@ -683,17 +578,27 @@ export default function TestPage() {
                         );
                       })}
                     </div>
+
+                    {result.mode !== 'knapsack' && result.cycle && (
+                      <div className="final-profit" style={{ marginTop: '10px', padding: '8px' }}>
+                        <h3>Cycle Profit Yield</h3>
+                        <div className="profit-value" style={{ fontSize: '1.1rem' }}>
+                          +{result.cycle.profit_percent.toFixed(2)}%
+                        </div>
+                      </div>
+                    )}
                   </>
                 ) : (
                   <div className="no-arb">
-                    <h3>No Profitable Cycles Found</h3>
+                    <h3>No Arbitrage Available</h3>
+                    <p>All cycle products ≤ 1.0 — no profitable path exists in this market tick.</p>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Trading Ledger Table in Simulation Mode */}
-            {isSimMode && ledger.length > 0 && (
+            {/* Trading Ledger Table */}
+            {ledger.length > 0 && (
               <div style={{ marginTop: '10px' }}>
                 <h3 style={{ fontSize: '0.8rem', color: 'var(--text-primary)', marginBottom: '4px' }}>Mock Trade Ledger</h3>
                 <div style={{ maxHeight: '150px', overflowY: 'auto', border: '1px solid var(--border-light)', borderRadius: '6px' }}>
@@ -734,7 +639,7 @@ export default function TestPage() {
 
       {!result && !loading && (
         <div className="placeholder-text">
-          <h2>Select a mode and click Generate/Start to analyze the market</h2>
+          <h2>Select an algorithm and click Start Simulation to begin</h2>
         </div>
       )}
       {loading && (

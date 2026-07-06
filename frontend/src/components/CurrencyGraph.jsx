@@ -73,12 +73,12 @@ export default function CurrencyGraph({ graphData, cycles }) {
           {hasEdges && graphData.links.filter(l => !activeEdges.has(`${l.from}->${l.to}`)).map((l,i) => {
             const lp=labelPos(l.from,l.to);
             const hasCycle = activeEdges.size > 0;
-            return (<g key={`ie-${l.from}-${l.to}`}>
-              <path d={edgePath(l.from,l.to)} stroke="#94a3b8" strokeWidth={1.5}
-                markerEnd="url(#ad)" opacity={hasCycle ? 0.15 : 0.7} fill="none"/>
-              {l.rate && !hasCycle && <text x={lp.x} y={lp.y} fontSize="8px" fontWeight={500}
-                fill="#64748b" textAnchor="middle" fontFamily="var(--font-mono)">{l.rate}</text>}
-            </g>);
+            return (
+              <g key={`ie-${l.from}-${l.to}`}>
+                <path d={edgePath(l.from,l.to)} stroke="#94a3b8" strokeWidth={1.5}
+                  markerEnd="url(#ad)" opacity={hasCycle ? 0.15 : 0.7} fill="none"/>
+              </g>
+            );
           })}
 
           {/* Layer 2: Active cycle edges — clean green, on top */}

@@ -163,6 +163,16 @@ public:
                     cycle_path.push_back(v);
                     std::reverse(cycle_path.begin(), cycle_path.end());
 
+                    // Rotate the cycle so it starts and ends with INR (0) if INR is part of the cycle
+                    auto it = std::find(cycle_path.begin(), cycle_path.end() - 1, 0);
+                    if (it != cycle_path.end() - 1) {
+                        std::vector<int> rotated_path;
+                        rotated_path.insert(rotated_path.end(), it, cycle_path.end() - 1);
+                        rotated_path.insert(rotated_path.end(), cycle_path.begin(), it);
+                        rotated_path.push_back(0);
+                        cycle_path = rotated_path;
+                    }
+
                     cycle.path = cycle_path;
                     cycle.product = 1.0;
                     for (size_t i = 0; i + 1 < cycle_path.size(); i++) {
