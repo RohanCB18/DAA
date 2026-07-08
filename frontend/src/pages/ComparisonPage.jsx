@@ -124,13 +124,21 @@ export default function ComparisonPage() {
     });
 
     const DEFAULT_EDGES = [
-      { from: 'CHF', to: 'EUR' }, { from: 'EUR', to: 'HKD' },
-      { from: 'CHF', to: 'CAD' }, { from: 'EUR', to: 'INR' }, { from: 'HKD', to: 'USD' },
-      { from: 'CAD', to: 'INR' }, { from: 'INR', to: 'USD' },
-      { from: 'CAD', to: 'AUD' }, { from: 'INR', to: 'SGD' }, { from: 'USD', to: 'JPY' },
-      { from: 'AUD', to: 'SGD' }, { from: 'SGD', to: 'JPY' },
-      { from: 'SGD', to: 'GBP' }, { from: 'AUD', to: 'GBP' }, { from: 'JPY', to: 'GBP' },
-      { from: 'CHF', to: 'INR' }, { from: 'USD', to: 'GBP' },
+      { from: 'INR', to: 'USD' }, { from: 'USD', to: 'INR' },
+      { from: 'INR', to: 'EUR' }, { from: 'EUR', to: 'INR' },
+      { from: 'INR', to: 'GBP' }, { from: 'GBP', to: 'INR' },
+      { from: 'USD', to: 'EUR' }, { from: 'EUR', to: 'USD' },
+      { from: 'USD', to: 'GBP' }, { from: 'GBP', to: 'USD' },
+      { from: 'USD', to: 'JPY' }, { from: 'JPY', to: 'USD' },
+      { from: 'USD', to: 'CHF' }, { from: 'CHF', to: 'USD' },
+      { from: 'USD', to: 'AUD' }, { from: 'AUD', to: 'INR' },
+      { from: 'USD', to: 'CAD' }, { from: 'CAD', to: 'INR' },
+      { from: 'INR', to: 'SGD' }, { from: 'SGD', to: 'USD' },
+      { from: 'USD', to: 'HKD' }, { from: 'HKD', to: 'INR' },
+      { from: 'EUR', to: 'GBP' }, { from: 'GBP', to: 'EUR' },
+      { from: 'EUR', to: 'CHF' }, { from: 'CHF', to: 'INR' },
+      { from: 'GBP', to: 'CHF' }, { from: 'CHF', to: 'EUR' },
+      { from: 'JPY', to: 'INR' }, { from: 'GBP', to: 'JPY' }
     ];
 
     const edgeSet = new Set(DEFAULT_EDGES.map((e) => `${e.from}->${e.to}`));
