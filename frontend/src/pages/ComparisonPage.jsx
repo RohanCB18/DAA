@@ -141,7 +141,13 @@ export default function ComparisonPage() {
       { from: 'JPY', to: 'INR' }, { from: 'GBP', to: 'JPY' }
     ];
 
-    const edgeSet = new Set(DEFAULT_EDGES.map((e) => `${e.from}->${e.to}`));
+    const seen = new Set();
+    const uniqueDefault = DEFAULT_EDGES.filter(e => {
+      const key = `${e.from}->${e.to}`;
+      if (seen.has(key)) return false;
+      seen.add(key);
+      return true;
+    });
     const extra = [];
 
     // Add paths from both active cycles
@@ -150,15 +156,15 @@ export default function ComparisonPage() {
         if (!c.path) return;
         for (let i = 0; i < c.path.length - 1; i++) {
           const key = `${c.path[i]}->${c.path[i + 1]}`;
-          if (!edgeSet.has(key)) {
-            edgeSet.add(key);
+          if (!seen.has(key)) {
+            seen.add(key);
             extra.push({ from: c.path[i], to: c.path[i + 1] });
           }
         }
       });
     });
 
-    return [...DEFAULT_EDGES, ...extra].map((edge) => ({
+    return [...uniqueDefault, ...extra].map((edge) => ({
       ...edge,
       rate: rates[`${edge.from}->${edge.to}`] || undefined,
     }));

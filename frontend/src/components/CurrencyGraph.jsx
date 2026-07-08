@@ -6,7 +6,7 @@ const NODE_POSITIONS = {
   'EUR': { x: 300, y: 25 },
   'HKD': { x: 550, y: 40 },
   'CAD': { x: 30,  y: 160 },
-  'INR': { x: 250, y: 150 },
+  'INR': { x: 200, y: 170 },
   'USD': { x: 520, y: 155 },
   'AUD': { x: 40,  y: 280 },
   'SGD': { x: 310, y: 275 },
